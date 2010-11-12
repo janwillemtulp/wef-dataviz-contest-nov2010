@@ -412,21 +412,20 @@ body {
 			{source: 4, target: 10, value: 4},
 			{source: 23, target: 10, value: 2},
 			{source: 34, target: 10, value: 2}],
-		r = 150,
+		r = 250,
 		c = pv.Scale.linear(0, 7).range('#FDE', '#548') 
-		centerX = h / 2,
-		centerY = w / 2;
+		offset = 50;
 
 	function getLineData(index, target, value) {
 		return [
 			{ 
-				x: (w / 2 + (r - 0) * Math.sin(Math.PI * 2 * index / nodes.length)),
-				y: (h / 2 + (r - 0) * Math.cos(Math.PI * 2 * index / nodes.length))
+				x: (w / 2 - offset + r * Math.sin(Math.PI * -2 * .5 * index / nodes.length)),
+				y: (h / 2 + r * Math.cos(Math.PI * 2 * .5 * index / nodes.length))
 			}, 
 			{ x: w / 2, y: h / 2 },
 			{
-				x: (w / 2 + r + 00 * Math.sin(Math.PI * 2 * target / nodes.length)),
-				y: (h / 2 + r + 00 * Math.cos(Math.PI * 2 * target / nodes.length))
+				x: (w / 2 + offset + r * -1 * Math.sin(Math.PI * -2 * .5 * target / nodes.length)),
+				y: (h / 2 + r * Math.cos(Math.PI * 2 * .5 * target / nodes.length))
 			}
 		]
 	}
@@ -445,12 +444,12 @@ body {
 		
 	vis.add(pv.Mark)
 	 	.data(nodes)
-		.bottom(function(d) centerX + (r - 0) * Math.cos(Math.PI * 1.5 * this.index / nodes.length ))
-		.left(function() centerY + r * Math.sin(Math.PI * 1.5 * this.index / nodes.length ))
-	  .anchor("left")
+		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * -2 * .5* this.index / nodes.length ))
+		.left(function() w / 2 - offset + r * Math.sin(Math.PI * -2 * .5 * this.index / nodes.length ))
+	  .anchor("right")
 	  .add(pv.Label)
 		.text(function(d) d.name)
-		.textAngle(function() -0.5 * Math.PI + 1.5 * Math.PI * this.index / nodes.length)
+		.textAngle(function() 0.5 * Math.PI + -2 * .5 * Math.PI * this.index / nodes.length)
 	
 	vis.add(pv.Panel)
 		.data(function() generateLineData())
@@ -459,9 +458,8 @@ body {
 		.bottom(function(d) d.y)
 		.left(function(d) d.x)
 		.lineWidth(function() edges[this.parent.index].value * 1.5)
-		.strokeStyle(function() c(edges[this.parent.index].value).alpha(.5))
+		.strokeStyle(function() c(edges[this.parent.index].value).alpha(.7))
 		.interpolate("basis")
-	  .add(pv.Dot)
 
 	vis.render();	
 
