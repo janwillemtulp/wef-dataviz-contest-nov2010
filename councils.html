@@ -442,14 +442,22 @@ body {
     	.width(w)
     	.height(h)
 		
-	vis.add(pv.Mark)
+	var mark = vis.add(pv.Mark)
 	 	.data(nodes)
 		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * -2 * .5* this.index / nodes.length ))
 		.left(function() w / 2 - offset + r * Math.sin(Math.PI * -2 * .5 * this.index / nodes.length ))
-	  .anchor("right")
+	  
+	mark.anchor("right")
 	  .add(pv.Label)
 		.text(function(d) d.name)
 		.textAngle(function() 0.5 * Math.PI + -2 * .5 * Math.PI * this.index / nodes.length)
+	  
+	mark.anchor("left")
+	  .add(pv.Label)
+		.text(function(d) d.name)
+		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * 2 * .5* this.index / nodes.length ))
+		.left(function() w / 2 + offset + r * Math.sin(Math.PI * 2 * .5 * this.index / nodes.length ))
+		.textAngle(function() 1.5 * Math.PI + 2 * .5 * Math.PI * this.index / nodes.length)
 	
 	vis.add(pv.Panel)
 		.data(function() generateLineData())
@@ -460,6 +468,8 @@ body {
 		.lineWidth(function() edges[this.parent.index].value * 1.5)
 		.strokeStyle(function() c(edges[this.parent.index].value).alpha(.7))
 		.interpolate("basis")
+		.event("mouseover", function() this.strokeStyle("#000"))
+		.event("mouseout", function() this.strokeStyle(c(edges[this.parent.index].value).alpha(.7)))
 
 	vis.render();	
 
