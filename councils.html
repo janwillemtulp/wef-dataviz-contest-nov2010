@@ -412,8 +412,8 @@ body {
 			{source: 4, target: 10, value: 4},
 			{source: 23, target: 10, value: 2},
 			{source: 34, target: 10, value: 2}],
-		r = 250,
-		c = pv.Scale.linear(0, 7).range('#FDE', '#548') 
+		r = 300,
+		c = pv.Scale.linear(0, 7).range('#6BB7D0', '#B6E3D5') 
 		offset = 50;
 
 	function getLineData(index, target, value) {
@@ -451,10 +451,12 @@ body {
 	  .add(pv.Label)
 		.text(function(d) d.name)
 		.textAngle(function() 0.5 * Math.PI + -2 * .5 * Math.PI * this.index / nodes.length)
+		.font("8px Helvetica")
 	  
 	mark.anchor("left")
 	  .add(pv.Label)
 		.text(function(d) d.name)
+		.font("8px Helvetica")
 		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * 2 * .5* this.index / nodes.length ))
 		.left(function() w / 2 + offset + r * Math.sin(Math.PI * 2 * .5 * this.index / nodes.length ))
 		.textAngle(function() 1.5 * Math.PI + 2 * .5 * Math.PI * this.index / nodes.length)
@@ -465,10 +467,10 @@ body {
 		.data(function(array) array)
 		.bottom(function(d) d.y)
 		.left(function(d) d.x)
-		.lineWidth(function() edges[this.parent.index].value * 1.5)
+		.lineWidth(function() edges[this.parent.index].value * 1)
 		.strokeStyle(function() c(edges[this.parent.index].value).alpha(.7))
 		.interpolate("basis")
-		.event("mouseover", function() this.strokeStyle("#000"))
+		.event("mouseover", function() this.strokeStyle("#FF7262"))
 		.event("mouseout", function() this.strokeStyle(c(edges[this.parent.index].value).alpha(.7)))
 
 	vis.render();	
