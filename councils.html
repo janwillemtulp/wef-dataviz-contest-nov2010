@@ -16,6 +16,80 @@ body {
 
 	var w = document.body.clientWidth,
     	h = document.body.clientHeight,
+		respondentCouncilsDistinct = [
+			{rc: "Africa", size: 5},
+			{rc: "Ageing", size: 10},
+			{rc: "Anti-Corruption", size: 5},
+			{rc: "Automotive", size: 6},
+			{rc: "Aviation, Travel & Tourism", size: 8},
+			{rc: "Banking & Capital Markets", size: 4},
+			{rc: "Benchmarking Progress", size: 8},
+			{rc: "Catastrophic Risks", size: 9},
+			{rc: "China", size: 6},
+			{rc: "Chronic Diseases & Well-being", size: 10},
+			{rc: "Climate Change", size: 7},
+			{rc: "Competitiveness", size: 8},
+			{rc: "Conflict Prevention", size: 1},
+			{rc: "Consumer", size: 8},
+			{rc: "Design", size: 13},
+			{rc: "Ecosystems & Biodiversity", size: 4},
+			{rc: "Education", size: 7},
+			{rc: "Emerging Multinationals", size: 6},
+			{rc: "Emerging Technologies", size: 7},
+			{rc: "Employment & Social Protection", size: 6},
+			{rc: "Energy Security", size: 6},
+			{rc: "Europe & Central Asia", size: 2},
+			{rc: "Fiscal Crises", size: 4},
+			{rc: "Food Security", size: 9},
+			{rc: "Fragile States", size: 4},
+			{rc: "Future of Government", size: 8},
+			{rc: "Geopolitical Risk", size: 6},
+			{rc: "Health", size: 8},
+			{rc: "Human Rights", size: 5},
+			{rc: "Humanitarian Assistance", size: 7},
+			{rc: "Illicit Trade", size: 12},
+			{rc: "India", size: 7},
+			{rc: "Informed Societies", size: 10},
+			{rc: "Innovation", size: 11},
+			{rc: "Institutional Governance Systems", size: 4},
+			{rc: "Insurance & Asset Management", size: 4},
+			{rc: "Intellectual Property System", size: 6},
+			{rc: "International Legal System", size: 10},
+			{rc: "International Monetary System", size: 6},
+			{rc: "Internet Security", size: 4},
+			{rc: "Japan", size: 8},
+			{rc: "Korea", size: 7},
+			{rc: "Latin America", size: 2},
+			{rc: "Logistics & Supply Chain", size: 7},
+			{rc: "Media, Entertainment & Information", size: 13},
+			{rc: "Middle East & North Africa", size: 6},
+			{rc: "Migration", size: 4},
+			{rc: "Mining & Metals", size: 5},
+			{rc: "Next Generation", size: 11},
+			{rc: "North America", size: 4},
+			{rc: "Ocean Governance", size: 8},
+			{rc: "Organized Crime", size: 7},
+			{rc: "Population Growth", size: 10},
+			{rc: "Poverty & Economic Development", size: 9},
+			{rc: "Private Fund Managers", size: 1},
+			{rc: "Public & Institutional Investors", size: 5},
+			{rc: "Real Estate", size: 6},
+			{rc: "Renewable Energy", size: 2},
+			{rc: "Role of Business", size: 2},
+			{rc: "Skills & Talent Mobility", size: 5},
+			{rc: "Social Innovation", size: 14},
+			{rc: "South-East Asia", size: 5},
+			{rc: "Space Security", size: 8},
+			{rc: "Systemic Financial Risk", size: 6},
+			{rc: "Telecom", size: 6},
+			{rc: "Terrorism", size: 8},
+			{rc: "Trade", size: 7},
+			{rc: "Urbanization", size: 9},
+			{rc: "Values", size: 10},
+			{rc: "Water Security", size: 11},
+			{rc: "Weapons of Mass Destruction", size: 11},
+			{rc: "Women’s Empowerment", size: 5}
+		],
 		respondentCouncils = [
 			{rc: "Africa", lc: "Competitiveness", size: 1},
 			{rc: "Africa", lc: "Education", size: 1},
@@ -989,8 +1063,9 @@ body {
 			{rci: 321, lci: 319, size: 1}
 		],
 		r = 300,
-		c = pv.Scale.linear(0, 7).range('#6BB7D0', '#B6E3D5') 
-		offset = 50;
+		c = pv.Scale.linear(0, 7).range('#A9AFA1', '#263640'),
+		wc = pv.Scale.linear(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size))).range("#BEA086", "#8F6E5D"),
+		offset = 35;
 
 	function getLineData(index, target, value) {
 		return[
@@ -1019,7 +1094,7 @@ body {
     	.height(h)
 
 	// respondent Councils 	
-	var mark = vis.add(pv.Mark)
+	/*var mark = vis.add(pv.Mark)
 	 	.data(respondentCouncils)
 		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * -2 * .5* this.index / respondentCouncils.length ))
 		.left(function() w / 2 - offset + r * Math.sin(Math.PI * -2 * .5 * this.index / respondentCouncils.length ))
@@ -1038,7 +1113,7 @@ body {
 	  .add(pv.Label)
 		.text(function(d) d.lc)
 		.font("8px Helvetica")	
-		.textAngle(function() 1.5 * Math.PI + 2 * .5 * Math.PI * this.index / linkedCouncils.length)
+		.textAngle(function() 1.5 * Math.PI + 2 * .5 * Math.PI * this.index / linkedCouncils.length)*/
 	
 	vis.add(pv.Panel)
 		.data(function() generateLineData())
@@ -1047,11 +1122,22 @@ body {
 		.bottom(function(d) d.y)
 		.left(function(d) d.x)
 		.lineWidth(function() links[this.parent.index].size * 1)
-		.strokeStyle(function() c(links[this.parent.index].size).alpha(.7))
+		.strokeStyle(function() c(links[this.parent.index].size).alpha(.5))
 		.interpolate("basis")
-		//.event("mouseover", function() this.strokeStyle("#FF7262"))
-		//.event("mouseout", function() this.strokeStyle(c(links[this.parent.index].size).alpha(.7)))
+		.event("mouseover", function() this.strokeStyle("#FF7262"))
+		.event("mouseout", function() this.strokeStyle(c(links[this.parent.index].size).alpha(.7)))
 		
+	// respondent Councils
+	vis.add(pv.Wedge)
+		.data(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size)))
+		.bottom(h / 2)
+		.left (w / 2 - offset)
+		.innerRadius(r + 2)
+		.outerRadius(r + 20)
+		.lineWidth(2)
+		.strokeStyle("white")
+		.fillStyle(function(d) wc(d))
+		.angle(function(d) d * -Math.PI)	
 
 	vis.render();	
 
