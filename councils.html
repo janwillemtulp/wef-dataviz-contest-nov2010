@@ -1064,7 +1064,7 @@ body {
 		],
 		r = 300,
 		c = pv.Scale.linear(0, 7).range('#A9AFA1', '#263640'),
-		wc = pv.Scale.linear(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size))).range("#BEA086", "#8F6E5D"),
+		wc = pv.Scale.linear(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size))).range("#C9D6B9", "#151C24"),
 		offset = 35;
 
 	function getLineData(index, target, value) {
@@ -1128,16 +1128,22 @@ body {
 		.event("mouseout", function() this.strokeStyle(c(links[this.parent.index].size).alpha(.7)))
 		
 	// respondent Councils
-	vis.add(pv.Wedge)
+	var rcWedge = vis.add(pv.Wedge)
 		.data(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size)))
 		.bottom(h / 2)
 		.left (w / 2 - offset)
 		.innerRadius(r + 2)
-		.outerRadius(r + 20)
-		.lineWidth(2)
+		.outerRadius(r + 15)
+		.lineWidth(1)
 		.strokeStyle("white")
 		.fillStyle(function(d) wc(d))
-		.angle(function(d) d * -Math.PI)	
+		.angle(function(d) d * -Math.PI)
+		.event("mouseover", function(d) console.log(d))	
+	  .anchor("outer")
+	  .add(pv.Label)
+		.textAlign("right")
+		.text(function(d) respondentCouncilsDistinct[this.index].rc)
+		.font("8px Helvetica")
 
 	vis.render();	
 
