@@ -16,6 +16,54 @@ body {
 
 	var w = document.body.clientWidth,
     	h = document.body.clientHeight,
+		linkedCouncilsDistinct = [
+			{lc: "Ageing", size: 10},
+			{lc: "Anti-Corruption", size: 10},
+			{lc: "Benchmarking Progress", size: 6},
+			{lc: "Catastrophic Risks", size: 8},
+			{lc: "Chronic Diseases & Well-being", size: 16},
+			{lc: "Climate Change", size: 47},
+			{lc: "Competitiveness", size: 18},
+			{lc: "Conflict Prevention", size: 11},
+			{lc: "Design", size: 3},
+			{lc: "Education", size: 34},
+			{lc: "Emerging Multinationals", size: 2},
+			{lc: "Emerging Technologies", size: 19},
+			{lc: "Employment & Social Protection", size: 6},
+			{lc: "Energy Security", size: 6},
+			{lc: "Fiscal Crises", size: 8},
+			{lc: "Food Security", size: 16},
+			{lc: "Fragile States", size: 5},
+			{lc: "Future of Government", size: 16},
+			{lc: "Geopolitical Risk", size: 18},
+			{lc: "Human Rights", size: 6},
+			{lc: "Humanitarian Assistance", size: 4},
+			{lc: "Illicit Trade", size: 4},
+			{lc: "Informed Societies", size: 7},
+			{lc: "Innovation", size: 37},
+			{lc: "Institutional Governance Systems", size: 18},
+			{lc: "Intellectual Property System", size: 2},
+			{lc: "International Legal System", size: 4},
+			{lc: "International Monetary System", size: 3},
+			{lc: "Internet Security", size: 1},
+			{lc: "Migration", size: 7},
+			{lc: "Next Generation", size: 5},
+			{lc: "Ocean Governance", size: 2},
+			{lc: "Organized Crime", size: 8},
+			{lc: "Population Growth", size: 7},
+			{lc: "Poverty & Economic Development", size: 41},
+			{lc: "Role of Business", size: 12},
+			{lc: "Skills & Talent Mobility", size: 3},
+			{lc: "Social Innovation", size: 6},
+			{lc: "Systemic Financial Risk", size: 14},
+			{lc: "Terrorism", size: 5},
+			{lc: "Trade", size: 13},
+			{lc: "Urbanization", size: 7},
+			{lc: "Values", size: 7},
+			{lc: "Water Security", size: 4},
+			{lc: "Weapons of Mass Destruction", size: 2},
+			{lc: "Women’s Empowerment", size: 5}
+		],
 		respondentCouncilsDistinct = [
 			{rc: "Africa", size: 5},
 			{rc: "Ageing", size: 10},
@@ -1064,7 +1112,8 @@ body {
 		],
 		r = 300,
 		c = pv.Scale.linear(0, 7).range('#A9AFA1', '#263640'),
-		wc = pv.Scale.linear(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size))).range("#C9D6B9", "#151C24"),
+		rcw = pv.Scale.linear(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size))).range("#061E1F", "#98B000"),
+		lcw = pv.Scale.linear(pv.normalize(linkedCouncilsDistinct.map(function(d) d.size))).range("#1C232E", "#FF6A00"),
 		offset = 35;
 
 	function getLineData(index, target, value) {
@@ -1092,28 +1141,6 @@ body {
 	var vis = new pv.Panel()
     	.width(w)
     	.height(h)
-
-	// respondent Councils 	
-	/*var mark = vis.add(pv.Mark)
-	 	.data(respondentCouncils)
-		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * -2 * .5* this.index / respondentCouncils.length ))
-		.left(function() w / 2 - offset + r * Math.sin(Math.PI * -2 * .5 * this.index / respondentCouncils.length ))
-	  .anchor("right")
-	  .add(pv.Label)
-		.text(function(d) d.rc)
-		.textAngle(function() 0.5 * Math.PI + -2 * .5 * Math.PI * this.index / respondentCouncils.length)
-		.font("8px Helvetica")
-	 
-	// linked Councils 
-	vis.add(pv.Mark)
-		.data(linkedCouncils)
-		.bottom(function(d) h / 2 + r * Math.cos(Math.PI * 2 * .5 * this.index / linkedCouncils.length ))
-		.left(function() w / 2 + offset + r * Math.sin(Math.PI * 2 * .5 * this.index / linkedCouncils.length ))
-	  .anchor("left")
-	  .add(pv.Label)
-		.text(function(d) d.lc)
-		.font("8px Helvetica")	
-		.textAngle(function() 1.5 * Math.PI + 2 * .5 * Math.PI * this.index / linkedCouncils.length)*/
 	
 	vis.add(pv.Panel)
 		.data(function() generateLineData())
@@ -1127,7 +1154,7 @@ body {
 		.event("mouseover", function() this.strokeStyle("#FF7262"))
 		.event("mouseout", function() this.strokeStyle(c(links[this.parent.index].size).alpha(.7)))
 		
-	// respondent Councils
+	// respondent Council wedge
 	var rcWedge = vis.add(pv.Wedge)
 		.data(pv.normalize(respondentCouncilsDistinct.map(function(d) d.size)))
 		.bottom(h / 2)
@@ -1136,13 +1163,31 @@ body {
 		.outerRadius(r + 15)
 		.lineWidth(1)
 		.strokeStyle("white")
-		.fillStyle(function(d) wc(d))
+		.fillStyle(function(d) rcw(d))
 		.angle(function(d) d * -Math.PI)
 		.event("mouseover", function(d) console.log(d))	
 	  .anchor("outer")
 	  .add(pv.Label)
 		.textAlign("right")
 		.text(function(d) respondentCouncilsDistinct[this.index].rc)
+		.font("8px Helvetica")
+		
+	// linked Council wedge
+	var lcWedge = vis.add(pv.Wedge)
+		.data(pv.normalize(linkedCouncilsDistinct.map(function(d) d.size)))
+		.bottom(h / 2)
+		.left (w / 2 + offset)
+		.innerRadius(r + 2)
+		.outerRadius(r + 15)
+		.lineWidth(1)
+		.strokeStyle("white")
+		.fillStyle(function(d) lcw(d))
+		.angle(function(d) d * Math.PI)
+		.event("mouseover", function(d) console.log(d))	
+	  .anchor("outer")
+	  .add(pv.Label)
+		.textAlign("left")
+		.text(function(d) linkedCouncilsDistinct[this.index].lc)
 		.font("8px Helvetica")
 
 	vis.render();	
