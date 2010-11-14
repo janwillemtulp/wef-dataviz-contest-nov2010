@@ -59,18 +59,19 @@ body {
 		c = pv.Scale.linear(0, 1).range('#A9AFA1', '#1C232E'),
 		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#061E1F", "#98B000"),
 		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
-		offset = 35;
+		offsetX = 35
+		offsetY = 50;
 
 	function getLineData(index, target, size) {
 		return[
 			{ 
-				x: (w / 2 - offset + r * Math.sin(Math.PI * -2 * .5 * index / linkData.length)),
-				y: (h / 2 + r * Math.cos(Math.PI * 2 * .5 * index / linkData.length))
+				x: (w / 2 - offsetX + r * Math.sin(Math.PI * -2 * .5 * index / linkData.length)),
+				y: (h / 2 - offsetY + r * Math.cos(Math.PI * 2 * .5 * index / linkData.length))
 			}, 
-			{ x: w / 2, y: h / 2 },
+			{ x: w / 2, y: h / 2 - offsetY },
 			{
-				x: (w / 2 + offset + r * -1 * Math.sin(Math.PI * -2 * .5 * target / linkData.length)),
-				y: (h / 2 + r * Math.cos(Math.PI * 2 * .5 * target / linkData.length))
+				x: (w / 2 + offsetX + r * -1 * Math.sin(Math.PI * -2 * .5 * target / linkData.length)),
+				y: (h / 2 -offsetY + r * Math.cos(Math.PI * 2 * .5 * target / linkData.length))
 			}
 		]
 	}
@@ -112,8 +113,8 @@ body {
 	// respondent Council wedge
 	var rcWedge = vis.add(pv.Wedge)
 		.data(pv.normalize(respondentCouncils.map(function(d) d.lcs.length)))
-		.bottom(h / 2)
-		.left (w / 2 - offset)
+		.bottom(h / 2 - offsetY)
+		.left (w / 2 - offsetX)
 		.innerRadius(r)
 		.outerRadius(function(d) r + respondentCouncils[this.index].linkCount * .7)
 		.lineWidth(1.5)
@@ -139,8 +140,8 @@ body {
 	// linked Council wedge
 	var lcWedge = vis.add(pv.Wedge)
 		.data(pv.normalize(linkedCouncils.map(function(d) d.rcs.length)))
-		.bottom(h / 2)
-		.left (w / 2 + offset)
+		.bottom(h / 2 - offsetY)
+		.left (w / 2 + offsetX)
 		.innerRadius(r)
 		.outerRadius(function(d) r + linkedCouncils[this.index].linkCount * .7)
 		.lineWidth(1.5)
