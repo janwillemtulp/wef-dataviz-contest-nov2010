@@ -1,6 +1,9 @@
 <html>
   <head>
     <title>World Economic Forum - Visualization Challenge - Jan Willem Tulp</title>
+	<style type="text/css">
+		body { margin: 0 auto; text-align: center;}
+	</style>
 	<script type="text/javascript" src="jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="protovis-r3.2.js"></script>
     <script type="text/javascript" src="GA11.js"></script>
@@ -14,31 +17,7 @@
 	<script type="text/javascript" src="IA11.js"></script>		
 	<script type="text/javascript" src="IA12.js"></script>
 	<script type="text/javascript" src="IA13.js"></script>
-	<script type="text/javascript">
-		if (!Array.prototype.filter)
-		{
-		  Array.prototype.filter = function(fun /*, thisp*/)
-		  {
-		    var len = this.length;
-		    if (typeof fun != "function")
-		      throw new TypeError();
-
-		    var res = new Array();
-		    var thisp = arguments[1];
-		    for (var i = 0; i < len; i++)
-		    {
-		      if (i in this)
-		      {
-		        var val = this[i]; // in case fun mutates this
-		        if (fun.call(thisp, val, i, this))
-		          res.push(val);
-		      }
-		    }
-
-		    return res;
-		  };
-		}
-	</script>
+	<script type="text/javascript" src="util.js"></script>
     <style type="text/css">
 
 body {
@@ -51,11 +30,12 @@ body {
     <script type="text/javascript+protovis">
 
 	var w = document.body.clientWidth,
-    	h = document.body.clientHeight,
+    	//h = document.body.clientHeight,
+		h = 900, 
 		r = h / 3.5,
-		linkData = linksIA13,
-		linkedCouncils = linkedCouncilsIA13,
-		respondentCouncils = respondentCouncilsIA13,
+		linkData = eval("links" + "IA13"),
+		linkedCouncils = eval("linkedCouncils" + "IA13"),
+		respondentCouncils = eval("respondentCouncils" + "IA13"),
 		c = pv.Scale.linear(0, 1).range('#A9AFA1', '#1C232E'),
 		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#061E1F", "#98B000"),
 		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
@@ -181,5 +161,6 @@ body {
 	vis.render();	
 
     </script>
+Hier begint de rest van de pagina, en gaat dat goed met de teksten? Ja dus!
   </body>
 </html>
