@@ -40,8 +40,8 @@ body {
 
 	var w = document.body.clientWidth,
     	//h = document.body.clientHeight,
-		h = 900, 
-		r = h / 3.5,
+		h = 1000, 
+		r = h / 3.75,
 		linkData = eval("links" + selectedAgenda + "1" + selectedRank),
 		linkedCouncils = eval("linkedCouncils" + selectedAgenda + "1" + selectedRank),
 		respondentCouncils = eval("respondentCouncils" + selectedAgenda + "1" + selectedRank),
@@ -49,15 +49,14 @@ body {
 		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0"),
 		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
 		offsetX = 35,
-		offsetY = 50;
+		offsetY = 70;
 
 	function updateData() {
 		linkData = eval("links" + selectedAgenda + "1" + selectedRank)
 		linkedCouncils = eval("linkedCouncils" + selectedAgenda + "1" + selectedRank)
 		respondentCouncils = eval("respondentCouncils" + selectedAgenda + "1" + selectedRank)
-		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0"),
-		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
-		
+		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0")
+		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00")
 	}
 
 	function getLineData(index, target, size) {
@@ -161,70 +160,67 @@ body {
 		
 	vis.add(pv.Label)
 		.text("Respondent Council")
-		.top(50)
+		.top(100)
 		.left(w/2 - 270)
 		.font("20px Helvetica")
 		.textAlign("right")
 		.textStyle("#1F77B4")
-	
-	vis.add(pv.Label)
+	  .add(pv.Label)
 		.text("Linked Council")
-		.top(50)
 		.left(w/2 + 270)
-		.font("20px Helvetica")
 		.textAlign("left")
 		.textStyle("#FF6A00")
 	  
 	vis.add(pv.Label)
 		.font("15px")
 		.text("Global Agenda")
-		.top(80)
+		.top(140)
 		.left(w/2 + 270)
 		.textStyle(function(d) selectedAgenda == "GA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Label)
+		.text("Regional Agenda")
+		.top(160)
+		.textStyle(function(d) selectedAgenda == "RA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Label)
+		.text("Industry Agenda")
+		.top(180)
+		.textStyle(function(d) selectedAgenda == "IA" ? "#FF6A00" : "#AAA")
+		
+	vis.add(pv.Label)
+		.top(40)
+		.left(w/2)
+		.textAlign("center")
+		.text("World Economic Forum")
+		.font("30px Helvetica")
+		.textStyle("#1C232E")
+	  .add(pv.Label)
+		.text("Council Interlinkage Visualization")
+		.top(65)
+		.font("17px Helvetica")
+		.textStyle("#74786E")
+	  
+	vis.add(pv.Bar)
+	  	.data(RA)
+		.top(143)
+		.width(19)
+		.height(19)
+		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
+	 	.text(function(d) d.r)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
 	  .add(pv.Bar)
 	  	.data(GA)
-		.top(63)
-		.width(19)
-		.height(19)
-		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
-	 	.text(function(d) d.r)
-		.left(function() w/2 + 360 + (this.index * 20))
+		.top(123)
 		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
-	  
-	vis.add(pv.Label)
-		.text("Regional Agenda")
-		.top(100)
-		.left(w/2 + 270)
-		.textStyle(function(d) selectedAgenda == "RA" ? "#FF6A00" : "#AAA")
-	  .add(pv.Bar)
-	  	.data(RA)
-		.top(83)
-		.width(19)
-		.height(19)
-		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
-	 	.text(function(d) d.r)
-		.left(function() w/2 + 360 + (this.index * 20))
-		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
-	 
-	vis.add(pv.Label)
-		.text("Industry Agenda")
-		.top(120)
-		.left(w/2 + 270)
-		.textStyle(function(d) selectedAgenda == "IA" ? "#FF6A00" : "#AAA")
 	  .add(pv.Bar)
 	  	.data(IA)
-		.top(103)
-		.width(19)
-		.height(19)
-		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
-	 	.text(function(d) d.r)
-		.left(function() w/2 + 360 + (this.index * 20))
+		.top(163)
 		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
 		
 	vis.add(pv.Label)
 		.data(GA)
 		.text(function(d) d.r)
-		.top(140)
+		.top(200)
 		.left(function() w/2 + 360 + (this.index * 20))
 		.textStyle(function(d) d.r <= selectedRank ? "#FF6A00" : "#AAA")
 
