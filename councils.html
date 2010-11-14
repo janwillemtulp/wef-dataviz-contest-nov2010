@@ -29,18 +29,36 @@ body {
   <body>
     <script type="text/javascript+protovis">
 
+	var GA = [{r: 1, a: "GA"}, {r: 2, a: "GA"}, {r: 3, a: "GA"}, {r: 4, a: "GA"}, {r: 5, a: "GA"}]
+	var RA = [{r: 1, a: "RA"}, {r: 2, a: "RA"}, {r: 3, a: "RA"}]
+	var IA = [{r: 1, a: "IA"}, {r: 2, a: "IA"}, {r: 3, a: "IA"}]
+
+	var selectedRC = ""
+	var selectedLC = ""
+	var selectedAgenda = "RA"
+	var selectedRank = 1
+
 	var w = document.body.clientWidth,
     	//h = document.body.clientHeight,
 		h = 900, 
 		r = h / 3.5,
-		linkData = eval("links" + "IA13"),
-		linkedCouncils = eval("linkedCouncils" + "IA13"),
-		respondentCouncils = eval("respondentCouncils" + "IA13"),
+		linkData = eval("links" + selectedAgenda + "1" + selectedRank),
+		linkedCouncils = eval("linkedCouncils" + selectedAgenda + "1" + selectedRank),
+		respondentCouncils = eval("respondentCouncils" + selectedAgenda + "1" + selectedRank),
 		c = pv.Scale.linear(0, 1).range('#A9AFA1', '#1C232E'),
-		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#061E1F", "#98B000"),
+		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0"),
 		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
-		offsetX = 35
+		offsetX = 35,
 		offsetY = 50;
+
+	function updateData() {
+		linkData = eval("links" + selectedAgenda + "1" + selectedRank)
+		linkedCouncils = eval("linkedCouncils" + selectedAgenda + "1" + selectedRank)
+		respondentCouncils = eval("respondentCouncils" + selectedAgenda + "1" + selectedRank)
+		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0"),
+		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
+		
+	}
 
 	function getLineData(index, target, size) {
 		return[
@@ -63,9 +81,6 @@ body {
 		}
 		return lines
 	}
-	
-	var selectedRC = ""
-	var selectedLC = ""
 
 	var vis = new pv.Panel()
     	.width(w)
@@ -92,7 +107,7 @@ body {
 		
 	// respondent Council wedge
 	var rcWedge = vis.add(pv.Wedge)
-		.data(pv.normalize(respondentCouncils.map(function(d) d.lcs.length)))
+		.data(function() pv.normalize(respondentCouncils.map(function(d) d.lcs.length)))
 		.bottom(h / 2 - offsetY)
 		.left (w / 2 - offsetX)
 		.innerRadius(r)
@@ -119,7 +134,7 @@ body {
 		
 	// linked Council wedge
 	var lcWedge = vis.add(pv.Wedge)
-		.data(pv.normalize(linkedCouncils.map(function(d) d.rcs.length)))
+		.data(function() pv.normalize(linkedCouncils.map(function(d) d.rcs.length)))
 		.bottom(h / 2 - offsetY)
 		.left (w / 2 + offsetX)
 		.innerRadius(r)
@@ -147,16 +162,71 @@ body {
 	vis.add(pv.Label)
 		.text("Respondent Council")
 		.top(50)
-		.left(w/2 - 150)
-		.font("40px Helvetica")
+		.left(w/2 - 270)
+		.font("20px Helvetica")
 		.textAlign("right")
+		.textStyle("#1F77B4")
 	
 	vis.add(pv.Label)
 		.text("Linked Council")
 		.top(50)
-		.left(w/2 + 150)
-		.font("40px Helvetica")
+		.left(w/2 + 270)
+		.font("20px Helvetica")
 		.textAlign("left")
+		.textStyle("#FF6A00")
+	  
+	vis.add(pv.Label)
+		.font("15px")
+		.text("Global Agenda")
+		.top(80)
+		.left(w/2 + 270)
+		.textStyle(function(d) selectedAgenda == "GA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Bar)
+	  	.data(GA)
+		.top(63)
+		.width(19)
+		.height(19)
+		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
+	 	.text(function(d) d.r)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
+	  
+	vis.add(pv.Label)
+		.text("Regional Agenda")
+		.top(100)
+		.left(w/2 + 270)
+		.textStyle(function(d) selectedAgenda == "RA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Bar)
+	  	.data(RA)
+		.top(83)
+		.width(19)
+		.height(19)
+		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
+	 	.text(function(d) d.r)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
+	 
+	vis.add(pv.Label)
+		.text("Industry Agenda")
+		.top(120)
+		.left(w/2 + 270)
+		.textStyle(function(d) selectedAgenda == "IA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Bar)
+	  	.data(IA)
+		.top(103)
+		.width(19)
+		.height(19)
+		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
+	 	.text(function(d) d.r)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
+		
+	vis.add(pv.Label)
+		.data(GA)
+		.text(function(d) d.r)
+		.top(140)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.textStyle(function(d) d.r <= selectedRank ? "#FF6A00" : "#AAA")
 
 	vis.render();	
 
