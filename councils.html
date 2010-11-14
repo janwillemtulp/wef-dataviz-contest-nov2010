@@ -11,7 +11,7 @@
 	<link type="text/css" rel="stylesheet" href="grid960.css" media="all"></link>
 	<style type="text/css">
 		body { font: 11px Helvetica; line-height: 20px;}
-		li { list-style: square; }
+		li { list-style: square;  }
 		li span { font-style: italic; }
 		em { font-weight: bold; }
 		img { float: left; margin-right: 10px; margin-top: 5px;}
@@ -283,31 +283,39 @@ body {
 		</div>
 		<div class="grid_6">
 			<h3>Explanation</h3>
+			<h4>General</h4>
+			<p>
+				Each Council consists of one or more organizations. Respondent Councils are the Councils that
+				filled out the survey. Linked Councils are the Councils the respondent Councils want to interact with.
+				There are 3 agenda's (Global, Regional and Industry) that contain a set of Councils.
+			</p>
 			<h4>Lines</h4>
 			<img src="lines.png" alt="Lines" />
 			<p>
-				The width of a line represents the number of links (organizations) a respondent Councils
-				links to a linked Council. The color of a line represents the strength of a link: 
-				this is the ratio of the number of links that link to a linked Council versus the 
-				total number of links for this respondent Council. Darker lines mean stronger links. 
+				The width of a line represents the number of organizations a respondent Councils
+				want to interact with a linked Council. The color of a line represents the strength of a link: 
+				this is the ratio of the number of organization that want to interact with a linked Council versus the 
+				total number of organizations for this respondent Council. Darker lines mean stronger links. 
 				So, linking with 9 out of 10 organizations to a linked Council will result in a darker
 				line than 1 out of 10, but also darker than 9 out of 20. 
 			</p>
 			<h4>Bars</h4>
 			<img src="bars.png" alt="Bars" />
 			<p>
-				The width of a bar shows the number of Councils this respondent Council links to, or 
-				this linked Council has received. The height of a bar shows the total number of links
-				for this Council. So, a linked Council with a small width and a large height has fewer
-				strong links than a linked council with a larger width and smaller height. To spot councils
-				with strong links, look for the bars with the largest height.
+				For respondent Councils the width of a bar shows the number of linked Councils this respondent Council 
+				wants to interact with, and for linked Councils the width of a bar shows the number of respondent
+				Councils that want to interact with this linked Council. 
+				The height of a bar shows the total number of organizations for this Council. 
+				So, a linked Council with a small width and a large height has only a few respondent Councils that 
+				want interact with it, but a large number of organizations within these respondent Councils
+				want to interact with this linked Council. 
 			</p>
 			<h4>Selecting Agenda and Rank</h4>
 			<img src="agendarank.png" alt="Agenda and Rank" />
 			<p>
-				To select a different agenda or link, click on one of the boxes. The selected agenda and ranks
-				are highlighted. If you click on a rank, a range from rank 1 will be selected. So, clicking on 3
-				Regional Agenda will show all the results for Regional Agenda from range 1 to range 3.
+				To select a different agenda or rank, click on one of the boxes. The selected agenda and ranks
+				are highlighted. If you click on a box, a range starting from rank 1 will be selected. So, clicking on 3
+				Regional Agenda will show all the results for Regional Agenda from rank 1 to rank 3.
 			</p>
 			<h4>Showing one Council only</h4>
 			<p>
@@ -323,7 +331,7 @@ body {
 				<ul>
 					<li><span>How do organization types link to Councils?</span></li>
 					<li><span>How do countries link to Councils?</span></li>
-					<li><span>How strong do respondents that link to a certain Council link to eachother?</span></li>
+					<li><span>How strong do respondents that link to a certain Council link to each other?</span></li>
 					<li><span>What does the popularity of a linked Council look like for each rank?</span></li>
 				</ul>
 				There are different ways to visually answer these questions. 
@@ -332,9 +340,6 @@ body {
 				almost every Council links to every other Council. 
 			</p>
 		</div>		
-		<div class="grid_6">
-			
-		</div>
 		<div class="grid_6">
 			<h3>Resources</h3>
 			<ul>
