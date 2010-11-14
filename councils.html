@@ -4,6 +4,31 @@
 	<script type="text/javascript" src="jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="protovis-r3.2.js"></script>
     <script type="text/javascript" src="councils.js"></script>
+	<script type="text/javascript">
+		if (!Array.prototype.filter)
+		{
+		  Array.prototype.filter = function(fun /*, thisp*/)
+		  {
+		    var len = this.length;
+		    if (typeof fun != "function")
+		      throw new TypeError();
+
+		    var res = new Array();
+		    var thisp = arguments[1];
+		    for (var i = 0; i < len; i++)
+		    {
+		      if (i in this)
+		      {
+		        var val = this[i]; // in case fun mutates this
+		        if (fun.call(thisp, val, i, this))
+		          res.push(val);
+		      }
+		    }
+
+		    return res;
+		  };
+		}
+	</script>
     <style type="text/css">
 
 body {
@@ -1116,6 +1141,8 @@ body {
 		rcw = pv.Scale.linear(pv.normalize(respondentCouncilsDistinct.map(function(d) d.councilCount))).range("#061E1F", "#98B000"),
 		lcw = pv.Scale.linear(pv.normalize(linkedCouncilsDistinct.map(function(d) d.councilCount))).range("#1C232E", "#FF6A00"),
 		offset = 35;
+		
+	var linkData = links //.filter(function(d) d.strength >= .4)
 
 	function getLineData(index, target, size) {
 		return[
@@ -1132,11 +1159,11 @@ body {
 	}
 	
 	function generateLineData() {
-		var lineData = new Array()
-		for (i = 0; i < links.length; i++) {
-			lineData[i] = getLineData(links[i].rci, links[i].lci, links[i].size)
+		var lines = new Array()
+		for (i = 0; i < linkData.length; i++) {
+			lines[i] = getLineData(linkData[i].rci, linkData[i].lci, linkData[i].size)
 		}
-		return lineData
+		return lines
 	}
 	
 	var selectedRC = ""
@@ -1153,21 +1180,21 @@ body {
 		.data(function(array) array)
 		.bottom(function(d) d.y)
 		.left(function(d) d.x)
-		.lineWidth(function(d) links[this.parent.index].size)
+		.lineWidth(function(d) linkData[this.parent.index].size)
 		.strokeStyle(function() { 
-			if (links[this.parent.index].rc == selectedRC 
-				|| links[this.parent.index].lc == selectedLC) {
-				return c(links[this.parent.index].strength).alpha(1)
+			if (linkData[this.parent.index].rc == selectedRC 
+				|| linkData[this.parent.index].lc == selectedLC) {
+				return c(linkData[this.parent.index].strength).alpha(1)
 			} else if (selectedRC == "" && selectedLC == "") {
-				return c(links[this.parent.index].strength).alpha(.8)
+				return c(linkData[this.parent.index].strength).alpha(.8)
 			} else {
-				return c(links[this.parent.index].strength).alpha(0)
+				return c(linkData[this.parent.index].strength).alpha(0)
 			}})
 		.interpolate("basis")
 		
 	// respondent Council wedge
 	var rcWedge = vis.add(pv.Wedge)
-		.data(pv.normalize(respondentCouncilsDistinct.map(function(d) d.councilCount)))
+		.data(pv.normalize(respondentCouncilsDistinct.map(function(d) d.lcs.length)))
 		.bottom(h / 2)
 		.left (w / 2 - offset)
 		.innerRadius(r)
@@ -1194,7 +1221,7 @@ body {
 		
 	// linked Council wedge
 	var lcWedge = vis.add(pv.Wedge)
-		.data(pv.normalize(linkedCouncilsDistinct.map(function(d) d.councilCount)))
+		.data(pv.normalize(linkedCouncilsDistinct.map(function(d) d.rcs.length)))
 		.bottom(h / 2)
 		.left (w / 2 + offset)
 		.innerRadius(r)
