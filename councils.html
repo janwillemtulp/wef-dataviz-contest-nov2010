@@ -1,6 +1,14 @@
 <html>
   <head>
     <title>World Economic Forum - Visualization Challenge - Jan Willem Tulp</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<meta name="description" content="interactive data visualization of the interlinkage between councils of the World Economic Formum, based ona 2010 survey data." />
+	<meta name="keywords" content="world economic forum, councils, data visualization, visualization" />
+	<meta name="author" content="Jan Willem Tulp" />	
+	<link type="text/css" rel="stylesheet" href="grid960.css" media="all"></link>
 	<style type="text/css">
 		body { margin: 0 auto; text-align: center;}
 	</style>
@@ -185,6 +193,10 @@ body {
 		.text("Industry Agenda")
 		.top(180)
 		.textStyle(function(d) selectedAgenda == "IA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Label)
+		.text("rank")
+		.top(120)
+		.left(w/2 + 357)
 		
 	vis.add(pv.Label)
 		.top(40)
@@ -194,7 +206,7 @@ body {
 		.font("30px Helvetica")
 		.textStyle("#1C232E")
 	  .add(pv.Label)
-		.text("Council Interlinkage Visualization")
+		.text("Council Interlinkage 2010")
 		.top(65)
 		.font("17px Helvetica")
 		.textStyle("#74786E")
