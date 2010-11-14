@@ -10,7 +10,13 @@
 	<meta name="author" content="Jan Willem Tulp" />	
 	<link type="text/css" rel="stylesheet" href="grid960.css" media="all"></link>
 	<style type="text/css">
-		body { margin: 0 auto; text-align: center;}
+		body { font: 11px Helvetica; line-height: 20px;}
+		li { list-style: square; }
+		li span { font-style: italic; }
+		em { font-weight: bold; }
+		img { float: left; margin-right: 10px; margin-top: 5px;}
+		a, a:link, a:active, a:visited { text-decoration: none; color: #2794E0; }
+		a:hover { text-decoration: underline; }
 	</style>
 	<script type="text/javascript" src="jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="protovis-r3.2.js"></script>
@@ -206,7 +212,7 @@ body {
 		.font("30px Helvetica")
 		.textStyle("#1C232E")
 	  .add(pv.Label)
-		.text("Council Interlinkage 2010")
+		.text("Global Agenda Council Interlinkage 2010")
 		.top(65)
 		.font("17px Helvetica")
 		.textStyle("#74786E")
@@ -239,6 +245,117 @@ body {
 	vis.render();	
 
     </script>
-Hier begint de rest van de pagina, en gaat dat goed met de teksten? Ja dus!
+	<div class="container_12">
+		<div class="grid_6">
+			<h3>What am I looking at?</h3>
+			<p>
+				This is a visual representation of data derived from a survey of experts from 72 
+				Global Agenda Councils of the World Economic Forum. The experts were asked to answer three survey questions: 
+				<ul>
+					<li><span>Please select a maximum of 5 Global Agenda Councils that your Council would benefit from interacting with by order of priority.</span></li>
+					<li><span>Please select a maximum of 3 Industry/Regional Agenda Councils that your Council would benefit from interacting with by order of priority.</span></li>
+					<li><span>Please describe how it interlinks with your Council.</span></li>
+				</ul>
+				This visualization was created for the <a href="http://www.visualizing.org/challenge/world-economic-forum-data-visualization-challenge" title="2010 Global Agenda Council Interlinkage Survey Data Visualization Contest" target="_blank">2010 Global Agenda Council Interlinkage Survey Data Visualization Contest</a>. 
+			</p>
+			<p>
+				Using data derived from a survey of these experts, interactive designers are asked to create a data visualization that will help elucidate the interconnectedness among issues, highlight the emerging clusters and catalyse dialogue at the Summit between the Councils.
+			</p>
+		</div>
+		<div class="grid_6">
+			<h3>Data</h3>
+			<p>
+				The original data set contains the following entities:
+				<ul>
+					<li>Rank: the rank from 1 to 5 for Global Agenda and 1 to 3 for Regional / Industry Agenda</li>
+					<li>Type: the agenda, either Global Agenda, Regional Agenda or Industry Agenda</li>
+					<li>Respondent Council: the Council the organization answering the survey question belongs to</li>
+					<li>Respondent Organization Type: Academia, NGO, International Organization, Business, Government or Other</li>
+					<li>Respondent Country: the originating country of the organization</li>
+					<li>Linked Council: the Council the organization answering the survey question wants to interact with</li>
+					<li>Description: explanation why the respondent wants to interact with this Council</li>
+				</ul>
+				For this visualization not all data is used, only Rank, Type, Respondent Council and Linked Council is used.
+				The original data can be found here: 
+				<a href="http://www.visualizing.org/sites/default/files/data_set/Marc%20Schwartz/Interlinkage%20survey%20data.xls" title="World Economic Forum GAC Interlinkage Data - Excel" target="_blank">Excel spreadsheet</a>
+				<a href="http://www.visualizing.org/sites/default/files/data_set/Marc%20Schwartz/GACInterlinkageSurveyData-CSVs.zip" title="World Economic Forum GAC Interlinkage Data - CSV" target="_blank">Zip archive containing csv files</a>.
+			</p>
+		</div>
+		<div class="grid_6">
+			<h3>Explanation</h3>
+			<h4>Lines</h4>
+			<img src="lines.png" alt="Lines" />
+			<p>
+				The width of a line represents the number of links (organizations) a respondent Councils
+				links to a linked Council. The color of a line represents the strength of a link: 
+				this is the ratio of the number of links that link to a linked Council versus the 
+				total number of links for this respondent Council. Darker lines mean stronger links. 
+				So, linking with 9 out of 10 organizations to a linked Council will result in a darker
+				line than 1 out of 10, but also darker than 9 out of 20. 
+			</p>
+			<h4>Bars</h4>
+			<img src="bars.png" alt="Bars" />
+			<p>
+				The width of a bar shows the number of Councils this respondent Council links to, or 
+				this linked Council has received. The height of a bar shows the total number of links
+				for this Council. So, a linked Council with a small width and a large height has fewer
+				strong links than a linked council with a larger width and smaller height. To spot councils
+				with strong links, look for the bars with the largest height.
+			</p>
+			<h4>Selecting Agenda and Rank</h4>
+			<img src="agendarank.png" alt="Agenda and Rank" />
+			<p>
+				To select a different agenda or link, click on one of the boxes. The selected agenda and ranks
+				are highlighted. If you click on a rank, a range from rank 1 will be selected. So, clicking on 3
+				Regional Agenda will show all the results for Regional Agenda from range 1 to range 3.
+			</p>
+			<h4>Showing one Council only</h4>
+			<p>
+				Move your mouse over the bar of a respondent Council or a linked Council to see 
+				only this council. 
+			</p>
+		</div>
+		<div class="grid_6">
+			<h3>Suggestions for future development</h3>
+			<p>
+				The data offers many more opportunities for further investigation and visualization.
+				A few of the unanswered questions are for example: 
+				<ul>
+					<li><span>How do organization types link to Councils?</span></li>
+					<li><span>How do countries link to Councils?</span></li>
+					<li><span>How strong do respondents that link to a certain Council link to eachother?</span></li>
+					<li><span>What does the popularity of a linked Council look like for each rank?</span></li>
+				</ul>
+				There are different ways to visually answer these questions. 
+				Also, perhaps some advanced data mining would reveal interesting clusters. 
+				As you can see when you select the highest rank for one of the Agenda's, it seems that 
+				almost every Council links to every other Council. 
+			</p>
+		</div>		
+		<div class="grid_6">
+			
+		</div>
+		<div class="grid_6">
+			<h3>Resources</h3>
+			<ul>
+				<li><a href="http://www.weforum.org/en/index.htm" title="World Economic Forum" target="_blank">World Economic Forum</a></li>
+				<li><a href="http://www.visualizing.org/challenge/world-economic-forum-data-visualization-challenge" title="Visualization contest page" target="_blank">Visualization contest page</a></li>
+				<li><a href="http://vis.stanford.edu/protovis/" title="Protovis" target="_blank">Protovis</a></li>
+			</ul>
+		</div>
+		<div class="grid_6">
+			<h3>Disclaimer</h3>
+			<p>
+				This visualization is developed using <a href="http://vis.stanford.edu/protovis/" title="Protovis" target="_blank">Protovis</a>. 
+				Protovis is free and open-source, provided under the BSD License. 
+				It uses JavaScript and SVG for web-native visualizations; no plugin required though <em>you will need a modern web browser! (current versions of IE not supported)</em> 
+			</p>
+		</div>
+		<div class="grid_6">
+			<h3>Credits</h3>
+			<div>Jan Willem Tulp</div>
+			<div>Twitter: <a href="http://twitter.com/JanWillemTulp" title="Jan Willem Tulp" target="_blank">@JanWillemTulp</a></div>
+		</div>
+	</div>
   </body>
 </html>
