@@ -1,0 +1,357 @@
+<html>
+  <head>
+    <title>World Economic Forum - Visualization Challenge - Jan Willem Tulp</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	<meta name="description" content="interactive data visualization of the interlinkage between councils of the World Economic Formum, based ona 2010 survey data." />
+	<meta name="keywords" content="world economic forum, councils, data visualization, visualization" />
+	<meta name="author" content="Jan Willem Tulp" />	
+	<link type="text/css" rel="stylesheet" href="grid960.css" media="all"></link>
+	<style type="text/css">
+		body { font: 11px Helvetica; line-height: 20px;}
+		li { list-style: square;  }
+		li span { font-style: italic; }
+		em { font-weight: bold; }
+		img { float: left; margin-right: 10px; margin-top: 5px;}
+		a, a:link, a:active, a:visited { text-decoration: none; color: #2794E0; }
+		a:hover { text-decoration: underline; }
+	</style>
+	<script type="text/javascript" src="jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="protovis-r3.2.js"></script>
+    <script type="text/javascript" src="GA11.js"></script>
+    <script type="text/javascript" src="GA12.js"></script>
+	<script type="text/javascript" src="GA13.js"></script>
+	<script type="text/javascript" src="GA14.js"></script>
+	<script type="text/javascript" src="GA15.js"></script>
+	<script type="text/javascript" src="RA11.js"></script>
+	<script type="text/javascript" src="RA12.js"></script>
+	<script type="text/javascript" src="RA13.js"></script>
+	<script type="text/javascript" src="IA11.js"></script>		
+	<script type="text/javascript" src="IA12.js"></script>
+	<script type="text/javascript" src="IA13.js"></script>
+	<script type="text/javascript" src="util.js"></script>
+    <style type="text/css">
+
+body {
+  margin: 0;
+}
+
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript+protovis">
+
+	var GA = [{r: 1, a: "GA"}, {r: 2, a: "GA"}, {r: 3, a: "GA"}, {r: 4, a: "GA"}, {r: 5, a: "GA"}]
+	var RA = [{r: 1, a: "RA"}, {r: 2, a: "RA"}, {r: 3, a: "RA"}]
+	var IA = [{r: 1, a: "IA"}, {r: 2, a: "IA"}, {r: 3, a: "IA"}]
+
+	var selectedRC = ""
+	var selectedLC = ""
+	var selectedAgenda = "RA"
+	var selectedRank = 1
+
+	var w = document.body.clientWidth,
+    	//h = document.body.clientHeight,
+		h = 1000, 
+		r = h / 3.75,
+		linkData = eval("links" + selectedAgenda + "1" + selectedRank),
+		linkedCouncils = eval("linkedCouncils" + selectedAgenda + "1" + selectedRank),
+		respondentCouncils = eval("respondentCouncils" + selectedAgenda + "1" + selectedRank),
+		c = pv.Scale.linear(0, 1).range('#A9AFA1', '#1C232E'),
+		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0"),
+		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00"),
+		offsetX = 35,
+		offsetY = 70;
+
+	function updateData() {
+		linkData = eval("links" + selectedAgenda + "1" + selectedRank)
+		linkedCouncils = eval("linkedCouncils" + selectedAgenda + "1" + selectedRank)
+		respondentCouncils = eval("respondentCouncils" + selectedAgenda + "1" + selectedRank)
+		rcw = pv.Scale.linear(pv.normalize(respondentCouncils.map(function(d) d.lcs.length))).range("#1A1F2B", "#2794E0")
+		lcw = pv.Scale.linear(pv.normalize(linkedCouncils.map(function(d) d.rcs.length))).range("#1C232E", "#FF6A00")
+	}
+
+	function getLineData(index, target, size) {
+		return[
+			{ 
+				x: (w / 2 - offsetX + r * Math.sin(Math.PI * -2 * .5 * index / linkData.length)),
+				y: (h / 2 - offsetY + r * Math.cos(Math.PI * 2 * .5 * index / linkData.length))
+			}, 
+			{ x: w / 2, y: h / 2 - offsetY },
+			{
+				x: (w / 2 + offsetX + r * -1 * Math.sin(Math.PI * -2 * .5 * target / linkData.length)),
+				y: (h / 2 -offsetY + r * Math.cos(Math.PI * 2 * .5 * target / linkData.length))
+			}
+		]
+	}
+	
+	function generateLineData() {
+		var lines = new Array()
+		for (i = 0; i < linkData.length; i++) {
+			lines[i] = getLineData(linkData[i].rci, linkData[i].lci, linkData[i].size)
+		}
+		return lines
+	}
+
+	var vis = new pv.Panel()
+    	.width(w)
+    	.height(h)
+	
+	// links between respondent Councils and linked Councils
+	vis.add(pv.Panel)
+		.data(function() generateLineData())
+	  .add(pv.Line)
+		.data(function(array) array)
+		.bottom(function(d) d.y)
+		.left(function(d) d.x)
+		.lineWidth(function(d) linkData[this.parent.index].size)
+		.strokeStyle(function() { 
+			if (linkData[this.parent.index].rc == selectedRC 
+				|| linkData[this.parent.index].lc == selectedLC) {
+				return c(linkData[this.parent.index].strength).alpha(1)
+			} else if (selectedRC == "" && selectedLC == "") {
+				return c(linkData[this.parent.index].strength).alpha(.8)
+			} else {
+				return c(linkData[this.parent.index].strength).alpha(0)
+			}})
+		.interpolate("basis")
+		
+	// respondent Council wedge
+	var rcWedge = vis.add(pv.Wedge)
+		.data(function() pv.normalize(respondentCouncils.map(function(d) d.lcs.length)))
+		.bottom(h / 2 - offsetY)
+		.left (w / 2 - offsetX)
+		.innerRadius(r)
+		.outerRadius(function(d) r + respondentCouncils[this.index].linkCount * .7)
+		.lineWidth(1.5)
+		.strokeStyle("white")
+		.fillStyle(function(d) rcw(d))
+		.angle(function(d) d * -Math.PI)
+		.event("mouseover", function(d) {selectedRC = respondentCouncils[this.index].rc; vis.render()})	
+		.event("mouseout", function(d) {selectedRC = ""; vis.render()})
+	  .anchor("outer")
+	  .add(pv.Label)
+		.textAlign("right")
+		.text(function(d) respondentCouncils[this.index].rc)
+		.font("9px Helvetica")
+		.visible(function(d) {
+			if (selectedRC == respondentCouncils[this.index].rc 
+				|| (selectedLC == "" && selectedRC == "")
+				| ($.inArray(selectedLC, respondentCouncils[this.index].lcs) > -1)) {
+				return true
+			} else {
+				return false
+			}})
+		
+	// linked Council wedge
+	var lcWedge = vis.add(pv.Wedge)
+		.data(function() pv.normalize(linkedCouncils.map(function(d) d.rcs.length)))
+		.bottom(h / 2 - offsetY)
+		.left (w / 2 + offsetX)
+		.innerRadius(r)
+		.outerRadius(function(d) r + linkedCouncils[this.index].linkCount * .7)
+		.lineWidth(1.5)
+		.strokeStyle("white")
+		.fillStyle(function(d) lcw(d))
+		.angle(function(d) d * Math.PI)
+		.event("mouseover", function(d) {selectedLC = linkedCouncils[this.index].lc; vis.render()})	
+		.event("mouseout", function(d) {selectedLC = ""; vis.render()})
+	  .anchor("outer")
+	  .add(pv.Label)
+		.textAlign("left")
+		.text(function(d) linkedCouncils[this.index].lc)
+		.font("9px Helvetica")
+		.visible(function(d) {
+			if (selectedLC == linkedCouncils[this.index].lc 
+				|| (selectedLC == "" && selectedRC == "")
+				|| ($.inArray(selectedRC, linkedCouncils[this.index].rcs) > -1)) {
+				return true
+			} else {
+				return false
+			}})
+		
+	vis.add(pv.Label)
+		.text("Respondent Council")
+		.top(100)
+		.left(w/2 - 270)
+		.font("20px Helvetica")
+		.textAlign("right")
+		.textStyle("#1F77B4")
+	  .add(pv.Label)
+		.text("Linked Council")
+		.left(w/2 + 270)
+		.textAlign("left")
+		.textStyle("#FF6A00")
+	  
+	vis.add(pv.Label)
+		.font("15px")
+		.text("Global Agenda")
+		.top(140)
+		.left(w/2 + 270)
+		.textStyle(function(d) selectedAgenda == "GA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Label)
+		.text("Regional Agenda")
+		.top(160)
+		.textStyle(function(d) selectedAgenda == "RA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Label)
+		.text("Industry Agenda")
+		.top(180)
+		.textStyle(function(d) selectedAgenda == "IA" ? "#FF6A00" : "#AAA")
+	  .add(pv.Label)
+		.text("rank")
+		.top(120)
+		.left(w/2 + 357)
+		
+	vis.add(pv.Label)
+		.top(40)
+		.left(w/2)
+		.textAlign("center")
+		.text("World Economic Forum")
+		.font("30px Helvetica")
+		.textStyle("#1C232E")
+	  .add(pv.Label)
+		.text("Global Agenda Council Interlinkage 2010")
+		.top(65)
+		.font("17px Helvetica")
+		.textStyle("#74786E")
+	  
+	vis.add(pv.Bar)
+	  	.data(RA)
+		.top(143)
+		.width(19)
+		.height(19)
+		.fillStyle(function(d) d.a == selectedAgenda && d.r <= selectedRank ? "#FF6A00" : "#CCC")
+	 	.text(function(d) d.r)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
+	  .add(pv.Bar)
+	  	.data(GA)
+		.top(123)
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
+	  .add(pv.Bar)
+	  	.data(IA)
+		.top(163)
+		.event("click", function(d) { selectedAgenda = d.a; selectedRank = d.r; updateData(); vis.render(); })
+		
+	vis.add(pv.Label)
+		.data(GA)
+		.text(function(d) d.r)
+		.top(200)
+		.left(function() w/2 + 360 + (this.index * 20))
+		.textStyle(function(d) d.r <= selectedRank ? "#FF6A00" : "#AAA")
+
+	vis.render();	
+
+    </script>
+	<div class="container_12">
+		<div class="grid_6">
+			<h3>What am I looking at?</h3>
+			<p>
+				This is a visual representation of data derived from a survey of experts from 72 
+				Global Agenda Councils of the World Economic Forum. The experts were asked to answer three survey questions: 
+				<ul>
+					<li><span>Please select a maximum of 5 Global Agenda Councils that your Council would benefit from interacting with by order of priority.</span></li>
+					<li><span>Please select a maximum of 3 Industry/Regional Agenda Councils that your Council would benefit from interacting with by order of priority.</span></li>
+					<li><span>Please describe how it interlinks with your Council.</span></li>
+				</ul>
+				This visualization was created for the <a href="http://www.visualizing.org/challenge/world-economic-forum-data-visualization-challenge" title="2010 Global Agenda Council Interlinkage Survey Data Visualization Contest" target="_blank">2010 Global Agenda Council Interlinkage Survey Data Visualization Contest</a>. 
+			</p>
+			<p>
+				Using data derived from a survey of these experts, interactive designers are asked to create a data visualization that will help elucidate the interconnectedness among issues, highlight the emerging clusters and catalyse dialogue at the Summit between the Councils.
+			</p>
+			<h3>Explanation</h3>
+			<h4>General</h4>
+			<p>
+				Each Council consists of one or more organizations. Respondent Councils are the Councils that
+				filled out the survey. Linked Councils are the Councils the respondent Councils want to interact with.
+				There are 3 agenda's (Global, Regional and Industry) that contain a set of Councils.
+			</p>
+			<h4>Lines</h4>
+			<img src="lines.png" alt="Lines" />
+			<p>
+				The width of a line represents the number of organizations a respondent Councils
+				want to interact with a linked Council. The color of a line represents the strength of a link: 
+				this is the ratio of the number of organization that want to interact with a linked Council versus the 
+				total number of organizations for this respondent Council. Darker lines mean stronger links. 
+				So, linking with 9 out of 10 organizations to a linked Council will result in a darker
+				line than 1 out of 10, but also darker than 9 out of 20. 
+			</p>
+			<h4>Bars</h4>
+			<img src="bars.png" alt="Bars" />
+			<p>
+				For respondent Councils the width of a bar shows the number of linked Councils this respondent Council 
+				wants to interact with, and for linked Councils the width of a bar shows the number of respondent
+				Councils that want to interact with this linked Council. 
+				The height of a bar shows the total number of organizations for this Council. 
+				So, a linked Council with a small width and a large height has only a few respondent Councils that 
+				want interact with it, but a large number of organizations within these respondent Councils
+				want to interact with this linked Council. 
+			</p>
+			<h4>Selecting Agenda and Rank</h4>
+			<img src="agendarank.png" alt="Agenda and Rank" />
+			<p>
+				To select a different agenda or rank, click on one of the boxes. The selected agenda and ranks
+				are highlighted. If you click on a box, a range starting from rank 1 will be selected. So, clicking on 3
+				Regional Agenda will show all the results for Regional Agenda from rank 1 to rank 3.
+			</p>
+			<h4>Showing one Council only</h4>
+			<p>
+				Move your mouse over the bar of a respondent Council or a linked Council to see 
+				only this council. 
+			</p>
+		</div>
+		<div class="grid_6">
+			<h3>Data</h3>
+			<p>
+				The original data set contains the following entities:
+				<ul>
+					<li>Rank: the rank from 1 to 5 for Global Agenda and 1 to 3 for Regional / Industry Agenda</li>
+					<li>Type: the agenda, either Global Agenda, Regional Agenda or Industry Agenda</li>
+					<li>Respondent Council: the Council the organization answering the survey question belongs to</li>
+					<li>Respondent Organization Type: Academia, NGO, International Organization, Business, Government or Other</li>
+					<li>Respondent Country: the originating country of the organization</li>
+					<li>Linked Council: the Council the organization answering the survey question wants to interact with</li>
+					<li>Description: explanation why the respondent wants to interact with this Council</li>
+				</ul>
+				For this visualization not all data is used, only Rank, Type, Respondent Council and Linked Council is used.
+				The original data can be found here: 
+				<a href="http://www.visualizing.org/sites/default/files/data_set/Marc%20Schwartz/Interlinkage%20survey%20data.xls" title="World Economic Forum GAC Interlinkage Data - Excel" target="_blank">Excel spreadsheet</a>
+				<a href="http://www.visualizing.org/sites/default/files/data_set/Marc%20Schwartz/GACInterlinkageSurveyData-CSVs.zip" title="World Economic Forum GAC Interlinkage Data - CSV" target="_blank">Zip archive containing csv files</a>.
+			</p>			
+			<h3>Suggestions for future development</h3>
+			<p>
+				The data offers many more opportunities for further investigation and visualization.
+				A few of the unanswered questions are for example: 
+				<ul>
+					<li><span>How do organization types link to Councils?</span></li>
+					<li><span>How do countries link to Councils?</span></li>
+					<li><span>How strong do respondents that link to a certain Council link to each other?</span></li>
+					<li><span>What does the popularity of a linked Council look like for each rank?</span></li>
+				</ul>
+				There are different ways to visually answer these questions. 
+				Also, perhaps some advanced data mining would reveal interesting clusters. 
+				As you can see when you select the highest rank for one of the Agenda's, it seems that 
+				almost every Council links to every other Council. 
+			</p>
+			<h3>Resources</h3>
+			<ul>
+				<li><a href="http://www.weforum.org/en/index.htm" title="World Economic Forum" target="_blank">World Economic Forum</a></li>
+				<li><a href="http://www.visualizing.org/challenge/world-economic-forum-data-visualization-challenge" title="Visualization contest page" target="_blank">Visualization contest page</a></li>
+				<li><a href="http://vis.stanford.edu/protovis/" title="Protovis" target="_blank">Protovis</a></li>
+			</ul>
+			<h3>Disclaimer</h3>
+			<p>
+				This visualization is developed using <a href="http://vis.stanford.edu/protovis/" title="Protovis" target="_blank">Protovis</a>. 
+				Protovis is free and open-source, provided under the BSD License. 
+				It uses JavaScript and SVG for web-native visualizations; no plugin required though <em>you will need a modern web browser! (current versions of IE not supported)</em> 
+			</p>
+			<h3>Credits</h3>
+			<div>Jan Willem Tulp</div>
+			<div>Twitter: <a href="http://twitter.com/JanWillemTulp" title="Jan Willem Tulp" target="_blank">@JanWillemTulp</a></div>
+			<div>Source code on GitHub: <a href="https://github.com/janwillemtulp/WEFdataviz112010" title="Source code" target="Blank">https://github.com/janwillemtulp/WEFdataviz112010</div>
+		</div>
+	</div>
+  </body>
+</html>
